@@ -3,8 +3,9 @@ Actuation torques acting on arm can generate torques in normal, binormal and tan
 direction. Environment set in this file is interfaced with stable-baselines and OpenAI Gym. It is shown that this
 environment works with PPO, TD3, DDPG, TRPO and SAC."""
 
-import gym
-from gym import spaces
+import gymnasium as gym
+import numpy as np
+from gymnasium import spaces
 
 
 import copy
@@ -307,7 +308,7 @@ class Environment(gym.Env):
 
         self.n_elem = n_elem
 
-    def reset(self):
+    def reset(self, seed=0):
         """
 
         This class method, resets and creates the simulation environment. First,
@@ -432,7 +433,7 @@ class Environment(gym.Env):
 
             """
 
-            def __init__(self, boundaries):
+            def __init__(self, boundaries, _system=None):
                 self.x_boundary_low = boundaries[0]
                 self.x_boundary_high = boundaries[1]
                 self.y_boundary_low = boundaries[2]
@@ -624,7 +625,7 @@ class Environment(gym.Env):
         self.previous_action = None
 
         # After resetting the environment return state information
-        return state
+        return state, {}
 
     def sampleAction(self):
         """
@@ -861,7 +862,8 @@ class Environment(gym.Env):
 
         reward = 1.0 * reward_dist
         """ Done is a boolean to reset the environment before episode is completed """
-        done = False
+        terminated = False
+        truncated = False
 
         # Position of the rod cannot be NaN, it is not valid, stop the simulation
         invalid_values_condition = _isnan_check(self.shearable_rod.position_collection)
@@ -873,7 +875,7 @@ class Environment(gym.Env):
             )
             reward = -1000
             state = self.get_state()
-            done = True
+            truncated = True
 
         if np.isclose(dist, 0.0, atol=0.05 * 2.0).all():
             self.on_goal += self.time_step
@@ -882,12 +884,13 @@ class Environment(gym.Env):
         if np.isclose(dist, 0.0, atol=0.05).all():
             self.on_goal += self.time_step
             reward += 1.5
-
         else:
             self.on_goal = 0
 
         if self.current_step >= self.total_learning_steps:
-            done = True
+            terminated = True # This always simulates until the end, there is no early termination. When
+                              # it has converged, it train a kind of regulation controller
+                              # this is probably quite inefficient
             if reward > 0:
                 print(
                     " Reward greater than 0! Reward: %0.3f, Distance: %0.3f "
@@ -901,8 +904,7 @@ class Environment(gym.Env):
         """ Done is a boolean to reset the environment before episode is completed """
 
         self.previous_action = action
-
-        return state, reward, done, {"ctime": self.time_tracker}
+        return state, reward, terminated, truncated, {"ctime": self.time_tracker}
 
     def render(self, mode="human"):
         """

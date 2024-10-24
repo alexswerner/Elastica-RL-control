@@ -9,15 +9,15 @@ import matplotlib
 import matplotlib.pyplot as plt
 
 # Import stable baseline
-from stable_baselines.bench.monitor import Monitor, load_results
-from stable_baselines.common.policies import MlpPolicy
-from stable_baselines.ddpg.policies import MlpPolicy as MlpPolicy_DDPG
-from stable_baselines.td3.policies import MlpPolicy as MlpPolicy_TD3
-from stable_baselines.sac.policies import MlpPolicy as MlpPolicy_SAC
-from stable_baselines import TRPO, DDPG, PPO1, TD3, SAC
+from stable_baselines3.common.monitor import Monitor, load_results
+from stable_baselines3 import DDPG, PPO, TD3, SAC
+from stable_baselines3.common.vec_env import DummyVecEnv, SubprocVecEnv
+from stable_baselines3.common.results_plotter import ts2xy, plot_results
+from stable_baselines3.common import results_plotter
 
 # Import simulation environment
 from set_environment import Environment
+import gymnasium as gym
 
 
 def get_valid_filename(s):
