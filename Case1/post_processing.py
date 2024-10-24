@@ -52,7 +52,7 @@ def plot_video_with_sphere(
     print("plot scene visualization video")
     FFMpegWriter = animation.writers["ffmpeg"]
     metadata = dict(title="Movie Test", artist="Matplotlib", comment="Movie support!")
-    writer = FFMpegWriter(fps=fps, metadata=metadata)
+    writer = FFMpegWriter(fps=fps, metadata=metadata, codec="mpeg2video")
     dpi = kwargs.get("dpi", 100)
 
     xlim = kwargs.get("x_limits", (-1.0, 1.0))
@@ -98,7 +98,7 @@ def plot_video_with_sphere(
             sphere_position[2],
             sphere_position[0],
             sphere_position[1],
-            s=np.pi * (scaling_factor * inst_radius) ** 2,
+            s=np.pi * (scaling_factor * inst_radius[0]) ** 2,
         )
         # sphere_radius,
         # color=sphere_cmap(sphere_idx),)
@@ -108,7 +108,7 @@ def plot_video_with_sphere(
     video_name = "2D_" + video_name
 
     with writer.saving(fig, video_name, dpi):
-        with plt.style.context("seaborn-whitegrid"):
+        with plt.style.context("seaborn-v0_8"):
             for time_idx in tqdm(range(0, sim_time.shape[0], int(step))):
 
                 for rod_idx in range(n_visualized_rods):
@@ -204,7 +204,7 @@ def plot_video_with_sphere_2D(
     print("plot scene visualization video")
     FFMpegWriter = animation.writers["ffmpeg"]
     metadata = dict(title="Movie Test", artist="Matplotlib", comment="Movie support!")
-    writer = FFMpegWriter(fps=fps, metadata=metadata)
+    writer = FFMpegWriter(fps=fps, metadata=metadata, codec="mpeg2video")
     dpi = kwargs.get("dpi", 100)
 
     xlim = kwargs.get("x_limits", (-1.0, 1.0))
@@ -254,7 +254,7 @@ def plot_video_with_sphere_2D(
     video_name = "2D_" + video_name
 
     with writer.saving(fig, video_name, dpi):
-        with plt.style.context("seaborn-whitegrid"):
+        with plt.style.context("seaborn-v0_8"):
             for time_idx in tqdm(range(0, sim_time.shape[0], int(step))):
 
                 for rod_idx in range(n_visualized_rods):
@@ -267,8 +267,8 @@ def plot_video_with_sphere_2D(
                     rod_lines[rod_idx].set_ydata(inst_position[1])
 
                     com = com_history_unpacker(rod_idx, time_idx)
-                    rod_com_lines[rod_idx].set_xdata(com[0])
-                    rod_com_lines[rod_idx].set_ydata(com[1])
+                    rod_com_lines[rod_idx].set_xdata([com[0]])
+                    rod_com_lines[rod_idx].set_ydata([com[1]])
 
                     rod_scatters[rod_idx].set_offsets(inst_position[:2].T)
                     rod_scatters[rod_idx].set_sizes(
