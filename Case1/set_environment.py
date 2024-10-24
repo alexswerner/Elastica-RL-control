@@ -19,9 +19,10 @@ from MuscleTorquesWithBspline.BsplineMuscleTorques import (
 from elastica._calculus import _isnan_check
 from elastica.timestepper import extend_stepper_interface
 from elastica import *
+from elastica.dissipation import AnalyticalLinearDamper
 
 # Set base simulator class
-class BaseSimulator(BaseSystemCollection, Constraints, Connections, Forcing, CallBacks):
+class BaseSimulator(BaseSystemCollection, Constraints, Connections, Damping, Forcing, CallBacks):
     pass
 
 
@@ -333,6 +334,7 @@ class Environment(gym.Env):
         nu = self.NU  # dissipation coefficient
         E = self.E  # Young's Modulus
         poisson_ratio = 0.5
+        shear_modulus = E / (poisson_ratio + 1.0)
 
         # Set the arm properties after defining rods
         base_length = 1.0  # rod base length
@@ -350,13 +352,19 @@ class Environment(gym.Env):
             base_length,
             base_radius=radius_along_rod,
             density=density,
-            nu=nu,
             youngs_modulus=E,
-            poisson_ratio=poisson_ratio,
+            shear_modulus=shear_modulus,
         )
+
+
 
         # Now rod is ready for simulation, append rod to simulation
         self.simulator.append(self.shearable_rod)
+        self.simulator.dampen(self.shearable_rod).using(
+            AnalyticalLinearDamper,
+            damping_constant=nu,
+            time_step=self.time_step
+        )
         # self.mode = 4
         if self.mode != 2:
             # fixed target position to reach
