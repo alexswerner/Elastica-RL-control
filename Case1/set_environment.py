@@ -675,11 +675,11 @@ class Environment(gym.Env):
 
         rod_compact_velocity = self.shearable_rod.velocity_collection[..., -1]
         rod_compact_velocity_norm = np.array([np.linalg.norm(rod_compact_velocity)])
-        rod_compact_velocity_dir = np.where(
-            rod_compact_velocity_norm != 0,
-            rod_compact_velocity / rod_compact_velocity_norm,
-            0.0,
-        )
+        if rod_compact_velocity_norm[0] == 0.:
+            rod_compact_velocity_dir = [0.,0.,0.]
+        else:
+            rod_compact_velocity_dir = rod_compact_velocity / rod_compact_velocity_norm
+
 
         sphere_compact_state = self.sphere.position_collection.flatten()  # 2
         sphere_compact_velocity = self.sphere.velocity_collection.flatten()
