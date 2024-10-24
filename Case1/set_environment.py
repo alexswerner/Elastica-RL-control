@@ -272,15 +272,15 @@ class Environment(gym.Env):
         # here we specify 4 tasks that can possibly used
         self.mode = mode
 
-        if self.mode is 2:
+        if self.mode == 2:
             assert "boundary" in kwargs, "need to specify boundary in mode 2"
             self.boundary = kwargs["boundary"]
 
-        if self.mode is 3:
+        if self.mode == 3:
             assert "target_v" in kwargs, "need to specify target_v in mode 3"
             self.target_v = kwargs["target_v"]
 
-        if self.mode is 4:
+        if self.mode == 4:
             assert (
                 "boundary" and "target_v" in kwargs
             ), "need to specify boundary and target_v in mode 4"
