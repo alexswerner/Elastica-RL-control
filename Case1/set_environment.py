@@ -495,7 +495,7 @@ class Environment(gym.Env):
         # MuscleTorquesWithVaryingBetaSplines uses the control points selected by RL to
         # generate torques along the arm.
         self.torque_profile_list_for_muscle_in_normal_dir = defaultdict(list)
-        self.spline_points_func_array_normal_dir = []
+        self.spline_points_func_array_normal_dir = [0]
         # Apply torques
         self.simulator.add_forcing_to(self.shearable_rod).using(
             MuscleTorquesWithVaryingBetaSplines,
@@ -510,7 +510,7 @@ class Environment(gym.Env):
         )
 
         self.torque_profile_list_for_muscle_in_binormal_dir = defaultdict(list)
-        self.spline_points_func_array_binormal_dir = []
+        self.spline_points_func_array_binormal_dir = [0]
         # Apply torques
         self.simulator.add_forcing_to(self.shearable_rod).using(
             MuscleTorquesWithVaryingBetaSplines,
@@ -525,7 +525,7 @@ class Environment(gym.Env):
         )
 
         self.torque_profile_list_for_muscle_in_twist_dir = defaultdict(list)
-        self.spline_points_func_array_twist_dir = []
+        self.spline_points_func_array_twist_dir = [0]
         # Apply torques
         self.simulator.add_forcing_to(self.shearable_rod).using(
             MuscleTorquesWithVaryingBetaSplines,
