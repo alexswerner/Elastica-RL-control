@@ -309,7 +309,10 @@ class Environment(gym.Env):
 
         self.n_elem = n_elem
 
-    def reset(self, seed=0):
+    def close(self):
+        pass
+
+    def reset(self, seed=0, options=None):
         """
 
         This class method, resets and creates the simulation environment. First,
