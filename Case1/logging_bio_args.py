@@ -129,7 +129,7 @@ if __name__ == "__main__":
                 E=1e7,
                 sim_dt=sim_dt,
                 n_elem=20,
-                NU=30,
+                NU=30/20.,
                 num_obstacles=0,
                 dim=3.0,
                 max_rate_of_change_of_activation=max_rate_of_change_of_activation,
