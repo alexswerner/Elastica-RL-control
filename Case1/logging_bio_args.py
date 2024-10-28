@@ -111,8 +111,14 @@ if __name__ == "__main__":
     # If True, train. Otherwise run trained policy
     args.TRAIN = True
 
-    from typing import Callable
+    name = str(args.algo_name) + "_3d-tracking_id"
+    identifer = name + "-" + str(args.timesteps_per_batch) + "_" + str(args.SEED)
 
+    if args.TRAIN:
+        log_dir = "./log_" + identifer + "/"
+        os.makedirs(log_dir, exist_ok=True)
+
+    from typing import Callable
     def make_env(rank: int, seed: int = 0) -> Callable:
         def _init() -> gym.Env:
             env = Environment(
@@ -142,15 +148,6 @@ if __name__ == "__main__":
     num_cpu = 92  # Number of processes to use
     vec_env = SubprocVecEnv([make_env(args.SEED*1000+i) for i in range(num_cpu)])
 
-
-    name = str(args.algo_name) + "_3d-tracking_id"
-    identifer = name + "-" + str(args.timesteps_per_batch) + "_" + str(args.SEED)
-
-
-    if args.TRAIN:
-        log_dir = "./log_" + identifer + "/"
-        os.makedirs(log_dir, exist_ok=True)
-        #env = Monitor(vec_env, log_dir)
 
 
 
