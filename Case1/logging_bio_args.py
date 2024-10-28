@@ -145,7 +145,13 @@ if __name__ == "__main__":
             return env
         return _init
 
-    num_cpu = 92  # Number of processes to use
+    import psutil
+    num_cpu = psutil.cpu_count(logical=False)
+    #num_cpu = 96  # Number of processes to use
+    if num_cpu > 1:
+        import os
+        os.environ["MP_NUM_THREAD"] ="1"
+        os.environ["NUMBA_NUM_THREADS"]="1"
     vec_env = SubprocVecEnv([make_env(args.SEED*1000+i) for i in range(num_cpu)])
 
 
@@ -167,9 +173,15 @@ if __name__ == "__main__":
                 batchsize: args.timesteps_per_batch,
             }
 
-        model = algo(env=vec_env, verbose=2, **items)
+        #model = algo(env=vec_env, verbose=2, **items)
         #model.set_env(env)
-
+        try:
+            print("Trying to load policy")
+            model = algo.load("bio_policy",env=vec_env, verbose=2, **items)
+            print("Success")
+        except Exception as ex:
+            print(ex)
+            model = algo(env=vec_env, verbose=2, **items)
         model.learn(total_timesteps=int(args.total_timesteps))
         model.save("bio_policy")
         # library helper
