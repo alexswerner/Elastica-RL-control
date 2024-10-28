@@ -134,8 +134,8 @@ if __name__ == "__main__":
                 dim=3.0,
                 max_rate_of_change_of_activation=max_rate_of_change_of_activation,
             )
-            env = Monitor(env)
-            env.reset(seed=seed+rank) # stupid
+            env = Monitor(env,log_dir+'/'+str(rank)+'_monitor.csv')
+            env.reset(seed=1000*seed+rank)
             return env
         return _init
 
