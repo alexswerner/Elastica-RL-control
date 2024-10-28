@@ -38,25 +38,6 @@ def moving_average(values, window):
     return np.convolve(values, weights, "valid")
 
 
-def plot_results(log_folder, title="Learning Curve"):
-    """
-    plot the results
-    :param log_folder: (str) the save location of the results to plot
-    :param title: (str) the title of the task to plot
-    """
-    x, y = ts2xy(load_results(log_folder), "timesteps")
-    y = moving_average(y, window=50)
-    # Truncate x
-    x = x[len(x) - len(y) :]
-    fig = plt.figure(title)
-    plt.plot(x, y)
-    plt.xlabel("Number of Timesteps")
-    plt.ylabel("Rewards")
-    plt.title(title + " Smoothed")
-    plt.savefig(title + ".png")
-    plt.close()
-
-
 if __name__ == "__main__":
     import multiprocessing
     multiprocessing.freeze_support()
@@ -199,7 +180,7 @@ if __name__ == "__main__":
             [log_dir],
             int(args.total_timesteps),
             results_plotter.X_TIMESTEPS,
-            "TRPO muscle" + identifer,
+            " muscle" + identifer,
         )
         plt.savefig("convergence_plot" + identifer + ".png")
         model.save("policy-" + identifer)
