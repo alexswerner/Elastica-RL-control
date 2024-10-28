@@ -689,11 +689,10 @@ class Environment(gym.Env):
         sphere_compact_velocity_norm = np.array(
             [np.linalg.norm(sphere_compact_velocity)]
         )
-        sphere_compact_velocity_dir = np.where(
-            sphere_compact_velocity_norm != 0,
-            sphere_compact_velocity / sphere_compact_velocity_norm,
-            0.0,
-        )
+        if sphere_compact_velocity_norm[0] == 0.:
+            sphere_compact_velocity_dir = [0.,0.,0.]
+        else:
+            sphere_compact_velocity_dir = sphere_compact_velocity / sphere_compact_velocity_norm[0]
 
         state = np.concatenate(
             (
