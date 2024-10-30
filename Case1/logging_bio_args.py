@@ -145,16 +145,14 @@ if __name__ == "__main__":
             return env
         return _init
 
-    import psutil
-    num_cpu = psutil.cpu_count(logical=False)
-    #num_cpu = 96  # Number of processes to use
-    if num_cpu > 1:
-        import os
-        os.environ["MP_NUM_THREAD"] ="1"
-        os.environ["NUMBA_NUM_THREADS"]="1"
-    vec_env = SubprocVecEnv([make_env(args.SEED*1000+i) for i in range(num_cpu)])
-
-
+    #import psutil
+    ##num_cpu = psutil.cpu_count(logical=False)
+    #num_cpu = 32  # Number of processes to use
+    #import os
+    #os.environ["MP_NUM_THREAD"] =str(num_cpu)
+    #os.environ["NUMBA_NUM_THREADS"]=str(num_cpu)
+    #vec_env = SubprocVecEnv([make_env(i,args.SEED) for i in range(num_cpu)])
+    vec_env = make_env(args.SEED)()
 
 
     if args.TRAIN:
